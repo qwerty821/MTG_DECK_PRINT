@@ -11,6 +11,8 @@ namespace MTG_DECK_PRINT
         private Thread _thread;
         public List<Card> deck;
         private Panel _panelToDraw;
+        public int nrCards { private set; get; }
+        
         public Deck() { 
             deck = new List<Card>();
         }
@@ -22,24 +24,25 @@ namespace MTG_DECK_PRINT
             
             foreach(string card_file in cards_path) { 
                 deck.Add(new Card(card_file));
+                nrCards++;
             }
         }
-        public void asyncWriteCards(object? panel)
-        {
-            foreach (Card card in deck)
+
+        public Card GetCardByIndex(int index)
+        {   
+            try
             {
-                _panelToDraw.Controls.Add(card.GetCard());
+                return deck.ElementAt(index);
+            } catch (Exception e) { 
+                MessageBox.Show("Out of Range");
             }
-        }
-        public void WriteCards(Panel panel) 
-        {
-            _panelToDraw = panel;
-            _thread = new Thread(new ParameterizedThreadStart(asyncWriteCards));
-            _thread.Start();
+            return null;
         }
 
         public List<Card> GetDeck() {
             return deck;
         }
+
+      
     }
 }

@@ -1,6 +1,8 @@
-﻿using QuestPDF.Fluent;
+﻿using Microsoft.AspNetCore.Components;
+using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QuestPDF.Previewer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,8 +12,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using PdfSharp;
 using Document = QuestPDF.Fluent.Document;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using System.Diagnostics;
 
 
 namespace MTG_DECK_PRINT
@@ -39,10 +44,18 @@ namespace MTG_DECK_PRINT
             this.Close();
             FormClose?.Invoke(sender, e);
         }
-
+        
         private void pdfButton_Click(object sender, EventArgs e)
         {
-            int nr = cards.GetDeck().Count;
+
+
+
+
+
+            //-------------------------------------
+
+
+            int nr = cards.nrCards;
             Document.Create(container =>
             {
                 container.Page(page =>
@@ -60,16 +73,18 @@ namespace MTG_DECK_PRINT
                         //    row.ConstantItem(spacing, unit).Background(color);
                         //});
                     });
-                    
+
                     page.Content().Column(col =>
                     {
-                        //col.Item().Height(spacing, unit).Background(color).Width(210, unit);
-                        for (int i = 0; i < nr; i++) {
+                        col.Item().Height(spacing, unit).Background(color).Width(210, unit);
+                        for (int i = 0; i < nr; i++)
+                        {
                             col.Item().AlignCenter().Row(row =>
                             {
+                                row.ConstantItem(spacing, unit).Background(color);
                                 for (int j = 0; j < 3 && i < nr; j++, i++)
                                 {
-                                    row.ConstantItem(w, unit).Image(cards.deck.ElementAt(i)._path);
+                                    row.ConstantItem(w, unit).Image(cards.GetCardByIndex(i)._path);
                                     row.ConstantItem(spacing, unit).Background(color);
                                     Console.WriteLine(i);
                                 }
@@ -84,19 +99,40 @@ namespace MTG_DECK_PRINT
                                 }
                             }
                         }
-                         
                     });
 
                 });
-
+                //}).ShowInPreviewer();
             }).GeneratePdf("deck.pdf");
+        }
+
+        public void Draw()
+        {
+            if (cardsView.InvokeRequired)
+            {
+                cardsView.BeginInvoke((MethodInvoker)delegate ()
+                {
+                    foreach (Card card in cards.GetDeck())
+                    {
+                        cardsView.Controls.Add((card).GetCardAsPanel());
+                    }
+                });
+            }
+            else
+            {
+                foreach (Card card in cards.GetDeck())
+                {
+                    cardsView.Controls.Add((card).GetCardAsPanel());
+                }
+            }
         }
         private void button2_Click(object sender, EventArgs e)
         {
             cards = new Deck();
             cards.ReadCards(Constants.Path);
-            cards.WriteCards(cardsView);
-            
+            //Thread t = new Thread(new ThreadStart(Draw));
+            //t.Start();
+          
         }
     }
 }

@@ -95,7 +95,7 @@
         #endregion
 
         private Button button1;
-        private FlowLayoutPanel cardsView;
+        public static FlowLayoutPanel cardsView;
         private Button pdfButton;
         private Button button2;
     }

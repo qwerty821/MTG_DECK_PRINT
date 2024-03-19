@@ -14,7 +14,7 @@ namespace MTG_DECK_PRINT
             DirectoryInfo directoryInfo = new DirectoryInfo(folder);
             cards.AddRange(Directory.GetFiles(folder, "*.*")
                 .Where(s => s.EndsWith(".png") || s.EndsWith(".jpg") || s.EndsWith(".bmp")));
-
+            
             return cards; 
         }
     }

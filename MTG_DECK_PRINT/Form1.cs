@@ -28,10 +28,7 @@ namespace MTG_DECK_PRINT
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
             //label1.Font = DefaultConstants.MtgFont;
-
-
         }
 
 
@@ -60,8 +57,6 @@ namespace MTG_DECK_PRINT
         {
             hoverForm.Location = new Point(MousePosition.X, MousePosition.Y);
             hoverForm.Show();
-             
-
         }
 
         private void pictureBox1_MouseLeave(object sender, EventArgs e)

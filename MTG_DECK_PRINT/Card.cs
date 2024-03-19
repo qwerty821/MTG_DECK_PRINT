@@ -19,7 +19,7 @@ namespace MTG_DECK_PRINT
                 if (value > 0)
                 {
                     _width = (int)(DefaultConstants.CardWidth * 3.7 * value);
-                    _height = (int)(DefaultConstants.CArdHeight * 3.7 * value);
+                    _height = (int)(DefaultConstants.CardHeight * 3.7 * value);
                 }
 
             }
@@ -30,7 +30,7 @@ namespace MTG_DECK_PRINT
             Coef = 1.7F;
         }
 
-        public Panel GetCard()
+        public Panel GetCardAsPanel()
         {
             Panel cardPanel = new Panel();
             cardPanel.AutoSize = true;

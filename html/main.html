@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 
+    Format A4
+    Dpi = 300
+    screenWidth  = 2480px
+    screenHeight = 3508px 
+    cardWidth = 744px
+    cardHeight = 1039px
+
+
+-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+<style>
+    html{
+        width: 2480px;
+        background-color: aquamarine;
+    }
+    body{
+        margin: 0px;
+        background-color: brown;
+    }
+    #content{
+        margin: 10px;
+    }
+    
+    #content {
+        display: flex;
+        background-color: blueviolet;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .card{
+        border-top: 20px transparent solid;
+    }
+    .space {
+        width: 40px;
+        background-color: bisque;
+    }
+
+    #content-grid{
+        display: grid;
+        column-gap: 50px;
+        row-gap: 50px;
+        background-color: blueviolet;
+    }
+    
+
+</style>
+
+</head>
+
+<body>
+    <div id = "content-grid">
+
+        <div class="card"><img src="img/1.png" width="744"></div>
+        <div class="space"></div>
+        <div class="card"><img src="img/1.png" width="744"></div>
+        <div class="space"></div>
+        <div class="card"><img src="img/1.png" width="744"></div>
+        
+        <div class="card"><img src="img/1.png" width="744"></div>
+        <div class="space"></div>
+        <div class="card"><img src="img/1.png" width="744"></div>
+        <div class="space"></div>
+        <div class="card"><img src="img/1.png" width="744"></div>
+         
+    </div>
+</body>
+</html>

@@ -12,9 +12,9 @@ namespace MTG_DECK_PRINT
     internal static class DefaultConstants
     {
         public const float CardWidth = 63; // 238px
-        public const float CArdHeight = 88; // 332px
+        public const float CardHeight = 88; // 332px
         public const Unit UnitOfMeasurement = Unit.Millimetre;
-        public const float Spacing = 0F;
+        public const float Spacing = 5F;
         public const string ColorOfSpace = Colors.Red.Medium;
         public const float HeaderHeight = 10;
         public const float FooterHeight = 10;
