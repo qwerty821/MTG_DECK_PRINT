@@ -17,6 +17,8 @@ using Document = QuestPDF.Fluent.Document;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using System.Diagnostics;
+using System.Threading;
+using Microsoft.Extensions.Primitives;
 
 
 namespace MTG_DECK_PRINT
@@ -30,12 +32,22 @@ namespace MTG_DECK_PRINT
         const string color = Colors.White;
         const float marginTop = 10;
         const float marginBottom = 10;
-
+        int timePerPage = 3;
         Deck cards;
+
+
+        public delegate void PrintEventHandler();
+        private event PrintEventHandler printIsDone;
+
+        bool buttonPrintIsPressed = false;
+
         public Form2()
         {
             InitializeComponent();
         }
+
+
+        private CancellationTokenSource _cancelToken = null;
 
         private void Form2_Load(object sender, EventArgs e) { }
 
@@ -44,95 +56,150 @@ namespace MTG_DECK_PRINT
             this.Close();
             FormClose?.Invoke(sender, e);
         }
-        
-        private void pdfButton_Click(object sender, EventArgs e)
+
+        private async Task printCards()
         {
-
-
-
-
-
-            //-------------------------------------
-
-
-            int nr = cards.nrCards;
-            Document.Create(container =>
+            await Task.Run(() =>
             {
-                container.Page(page =>
+
+                int nr = cards.nrCards;
+                Document.Create(container =>
                 {
-                    page.Header().Height(10, unit).Column(col =>
-                    {
-                        //col.Item().AlignCenter().Row(row =>
-                        //{
-                        //    row.ConstantItem(spacing, unit).Background(color);
-                        //    row.ConstantItem(w, unit).Height(10, unit).Background(Colors.Transparent);
-                        //    row.ConstantItem(spacing, unit).Background(color);
-                        //    row.ConstantItem(w, unit).Height(10, unit).Background(Colors.Transparent);
-                        //    row.ConstantItem(spacing, unit).Background(color);
-                        //    row.ConstantItem(w, unit).Height(10, unit).Background(Colors.Transparent);
-                        //    row.ConstantItem(spacing, unit).Background(color);
-                        //});
-                    });
 
-                    page.Content().Column(col =>
+                    container.Page(page =>
                     {
-                        col.Item().Height(spacing, unit).Background(color).Width(210, unit);
-                        for (int i = 0; i < nr; i++)
+                        page.Header().Height(10, unit).Column(col =>
                         {
-                            col.Item().AlignCenter().Row(row =>
-                            {
-                                row.ConstantItem(spacing, unit).Background(color);
-                                for (int j = 0; j < 3 && i < nr; j++, i++)
-                                {
-                                    row.ConstantItem(w, unit).Image(cards.GetCardByIndex(i)._path);
-                                    row.ConstantItem(spacing, unit).Background(color);
-                                    Console.WriteLine(i);
-                                }
-                                i--;
-                            });
+                            //col.Item().AlignCenter().Row(row =>
+                            //{
+                            //    row.ConstantItem(spacing, unit).Background(color);
+                            //    row.ConstantItem(w, unit).Height(10, unit).Background(Colors.Transparent);
+                            //    row.ConstantItem(spacing, unit).Background(color);
+                            //    row.ConstantItem(w, unit).Height(10, unit).Background(Colors.Transparent);
+                            //    row.ConstantItem(spacing, unit).Background(color);
+                            //    row.ConstantItem(w, unit).Height(10, unit).Background(Colors.Transparent);
+                            //    row.ConstantItem(spacing, unit).Background(color);
+                            //});
+                        });
+                        page.Content().Column(col =>
+                        {
                             col.Item().Height(spacing, unit).Background(color).Width(210, unit);
-                            if (i == nr - 1)
+                            for (int i = 0; i < nr; i++)
                             {
-                                for (int j = i; j % 3 != 0; j++)
+                                col.Item().AlignCenter().Row(row =>
                                 {
-
-                                }
+                                    row.ConstantItem(spacing, unit).Background(color);
+                                    for (int j = 0; j < 3 && i < nr; j++, i++)
+                                    {
+                                        row.ConstantItem(w, unit).Image(cards.GetCardByIndex(i)._path);
+                                        row.ConstantItem(spacing, unit).Background(color);
+                                        Console.WriteLine(i);
+                                    }
+                                    i--;
+                                });
+                                col.Item().Height(spacing, unit).Background(color).Width(210, unit);
                             }
-                        }
-                    });
+                        });
 
-                });
-                //}).ShowInPreviewer();
-            }).GeneratePdf("deck.pdf");
+                    });
+                }).GeneratePdf("deck.pdf");
+
+                printIsDone.Invoke();
+
+            });
         }
 
-        public void Draw()
+        private async Task progressBar()
         {
-            if (cardsView.InvokeRequired)
+            try
             {
-                cardsView.BeginInvoke((MethodInvoker)delegate ()
-                {
-                    foreach (Card card in cards.GetDeck())
-                    {
-                        cardsView.Controls.Add((card).GetCardAsPanel());
-                    }
-                });
+                await Task.Run(() =>
+                 {
+                     for (int i = 0; i < progressBar1.Maximum - 5; i++)
+                     {
+                         Thread.Sleep(1);
+                         _cancelToken.Token.ThrowIfCancellationRequested();
+                         progressBar1.Value += 1;
+                     }
+                 });
             }
-            else
+            catch (Exception ex)
             {
-                foreach (Card card in cards.GetDeck())
+                await Console.Out.WriteLineAsync("aaasdasdasd");
+            }
+        }
+        private async Task DrawAsync()
+        {
+            foreach (Card card in cards.GetDeck())
+            {
+                await Draww(card);
+            }
+
+        }
+
+        private async Task Draww(Card card)
+        {
+
+            await Task.Run(() =>
+            {
+                cardsView.Invoke((MethodInvoker)delegate
                 {
                     cardsView.Controls.Add((card).GetCardAsPanel());
-                }
+                });
+            });
+
+        }
+ 
+       
+
+        private async void buttonPrint_Click(object sender, EventArgs e)
+        {
+            buttonPrint.Enabled = false;
+
+            _cancelToken = new CancellationTokenSource();
+            Task taskPrint = printCards();
+            Task taskPogressBar = progressBar();
+
+            await Task.WhenAll(taskPrint, taskPogressBar);
+            
+            buttonPrint.Enabled = true;
+
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            if (buttonPrintIsPressed)
+            {
+                _cancelToken.Cancel();
             }
         }
-        private void button2_Click(object sender, EventArgs e)
+
+        private async void buttonLoad_Click(object sender, EventArgs e)
         {
-            cards = new Deck();
-            cards.ReadCards(Constants.Path);
-            //Thread t = new Thread(new ThreadStart(Draw));
-            //t.Start();
-          
+            if (!buttonPrintIsPressed)
+            {
+                buttonPrintIsPressed = true;
+
+                buttonLoad.Enabled = false;
+
+                cards = new Deck();
+                cards.ReadCards(Constants.Path);
+
+                progressBar1.Maximum = (cards.nrCards / 9) * timePerPage * 100;
+                progressBar1.Minimum = 0;
+                progressBar1.Value = 0;
+                
+                await DrawAsync();
+
+                printIsDone += () =>
+                {
+                    _cancelToken.Cancel();
+                    progressBar1.Value = progressBar1.Maximum;
+                    MessageBox.Show("Completed");
+                };
+
+                buttonPrintIsPressed = true;
+            }
         }
     }
 }

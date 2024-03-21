@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MTG_DECK_PRINT")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12bbd58210facf63b841aa485093b1df85c9c59d")]
 [assembly: System.Reflection.AssemblyProductAttribute("MTG_DECK_PRINT")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MTG_DECK_PRINT")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

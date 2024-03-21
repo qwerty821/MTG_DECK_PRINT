@@ -33,10 +33,8 @@
             openFileDialog1 = new OpenFileDialog();
             exitButton = new PictureBox();
             label1 = new Label();
-            pictureBox1 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)exitButton).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // button2
@@ -93,16 +91,6 @@
             label1.Text = "Choose the folder with cards";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Location = new Point(905, 353);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(132, 99);
-            pictureBox1.TabIndex = 4;
-            pictureBox1.TabStop = false;
-            pictureBox1.MouseLeave += pictureBox1_MouseLeave;
-            pictureBox1.MouseHover += pictureBox1_MouseHover;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -112,7 +100,6 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1154, 738);
             ControlBox = false;
-            Controls.Add(pictureBox1);
             Controls.Add(label1);
             Controls.Add(exitButton);
             Controls.Add(button2);
@@ -126,7 +113,6 @@
             MouseUp += Form1_MouseUp;
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
             ((System.ComponentModel.ISupportInitialize)exitButton).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -137,6 +123,5 @@
         private OpenFileDialog openFileDialog1;
         private PictureBox exitButton;
         private Label label1;
-        private PictureBox pictureBox1;
     }
 }
